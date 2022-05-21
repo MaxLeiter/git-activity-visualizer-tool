@@ -1,5 +1,5 @@
 :root {
-  --content-width: min(800px, 100%);
+  --content-width: 800px;
 
   --gap: 1rem;
   --gap-double: 2rem;
@@ -66,4 +66,18 @@ button {
 label {
   color: var(--light-gray);
   margin-right: var(--gap);
+}
+
+[data-theme="dark"] a {
+  color: #579dff;
+}
+
+[data-theme="dark"] a:hover {
+  color: var(--fg);
+}
+
+@media screen and (max-width: 768px) {
+  :root {
+    --content-width: 100%;
+  }
 }

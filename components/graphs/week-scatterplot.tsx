@@ -13,7 +13,10 @@ type Props = {
 const WeekScatterplot = ({ commits }: Props) => {
     const [weekBuckets, setWeekBuckets] = useState<Map<number, number>>()
     const svgRef = useRef(null)
-    const tooltip = useTooltip()
+    const {mouseLeave, mouseMove, mouseOver} = useTooltip({
+        transformFct: (d) => `${getDayFromNumber(d.day)} ${d.hour}:00`
+    })
+    
     const { margin, rawWidth, rawHeight, width, height } = useGraphSize()
 
     useEffect(() => {
@@ -72,27 +75,6 @@ const WeekScatterplot = ({ commits }: Props) => {
             .append("g")
             .call(d3.axisLeft(y))
 
-        const mouseOver = function (event: MouseEvent, d: any) {
-            tooltip
-                .html(`${getDayFromNumber(d.day)} - ${d.count} commits`)
-                .style("left", event.pageX + "px")
-                .style("top", event.pageY + "px")
-                .style("opacity", 1)
-        }
-
-        const mouseMove = function (event: MouseEvent, d: any) {
-            tooltip
-                .style("left", event.pageX + "px")
-                .style("top", event.pageY + "px")
-        }
-
-        const mouseLeave = function () {
-            tooltip
-                .style("opacity", 0)
-                .transition()
-                .duration(200)
-        }
-
         // Add dots
         svg
             .append("g")
@@ -150,7 +132,7 @@ const WeekScatterplot = ({ commits }: Props) => {
             .style("text-decoration", "underline")
             .text(`Commits by day of the week`)
 
-    }, [commits.length, height, margin.bottom, margin.left, margin.right, margin.top, rawHeight, rawWidth, tooltip, weekBuckets, width])
+    }, [commits.length, height, margin.bottom, margin.left, margin.right, margin.top, mouseLeave, mouseMove, mouseOver, rawHeight, rawWidth, weekBuckets, width])
 
     const download = useDownload(svgRef, 'commits-by-day-of-week.svg')
 

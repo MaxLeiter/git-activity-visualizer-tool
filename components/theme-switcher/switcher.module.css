@@ -6,7 +6,7 @@
     margin-right: var(--gap-half);
 }
 
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 768px) {
     .themeSwitcher {
         align-self: flex-start;
         display: flex;

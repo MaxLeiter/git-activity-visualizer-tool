@@ -1,4 +1,4 @@
-import type { NextPage } from 'next'
+import type { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next'
 
 import { useState } from 'react'
 import Head from 'next/head'
@@ -10,10 +10,15 @@ import Footer from '@/components/Footer'
 
 import type { Commits } from './api/fetch-github-events'
 import Graphs from '@/components/graphs'
+import fetchDefaultCommits from '@/lib/fetch-default-commits'
 
-const Home: NextPage = () => {
+type Props = {
+  commits: Commits
+}
+
+const Home: NextPage<Props> = ({ commits: initialCommits }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const [isLoading, setIsLoading] = useState(false)
-  const [commits, setCommits] = useState<Commits>([])
+  const [commits, setCommits] = useState<Commits>(initialCommits ? initialCommits : [])
   const [error, setError] = useState<string | undefined>()
 
   const handleSubmit = async (username: string) => {
@@ -28,13 +33,13 @@ const Home: NextPage = () => {
         const error = await commitsByRepo.json()
         throw new Error(error.error)
       }
-
       const commitsByRepoJson = await commitsByRepo.json()
+
       setCommits(commitsByRepoJson.commits)
     }
     catch (e: any) {
       if (e instanceof Error)
-        setError(`Error from GitHub API: ${e.message}`)
+        setError(`${e.message}`)
       else
         setError('An unknown error occurred. Check your browser console for more details.')
         console.error(e)
@@ -42,6 +47,7 @@ const Home: NextPage = () => {
     setIsLoading(false)
   }
 
+  console.log(commits)
   return (
     <div className={styles.container}>
       <Head>
@@ -54,12 +60,22 @@ const Home: NextPage = () => {
         <Intro />
         <UserInput onSubmit={handleSubmit} error={error} setError={setError}/>
         {isLoading && <p className={styles.loading}>Loading... (this may take a few seconds)</p>}
-        {!isLoading && commits.length > 0 && <Graphs commits={commits} />}
+        {!isLoading && !error && commits.length > 0 && <Graphs commits={commits} />}
       </main>
 
       <Footer />
     </div>
   )
+}
+
+export const getStaticProps: GetStaticProps<Props> = async (context) => {
+  const commits = await fetchDefaultCommits()
+
+  return {
+    props: {
+      commits: commits.commits,
+    }
+  }
 }
 
 export default Home

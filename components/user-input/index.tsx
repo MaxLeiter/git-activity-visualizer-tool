@@ -10,7 +10,7 @@ type Props = {
 
 const UserInput = ({ onSubmit, error, setError }: Props) => {
     const router = useRouter()
-    const [usernameOrLink, setUsernameOrLink] = useState<string>('')
+    const [usernameOrLink, setUsernameOrLink] = useState<string>('MaxLeiter')
     const { query } = router
 
     useEffect(() => {

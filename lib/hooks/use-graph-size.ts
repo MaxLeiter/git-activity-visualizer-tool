@@ -1,5 +1,5 @@
 const useGraphSize = () => {
-    const margin = { top: 30, right: 30, bottom: 80, left: 30 },
+    const margin = { top: 30, right: 30, bottom: 75, left: 70 },
     rawWidth = 800,
     rawHeight = 400,
     width = rawWidth - margin.left - margin.right,

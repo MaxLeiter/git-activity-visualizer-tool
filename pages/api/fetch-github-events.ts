@@ -12,7 +12,7 @@ type Data = {
   commits?: Commits
 }
 
-export default async function handler(
+async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
@@ -25,7 +25,7 @@ export default async function handler(
 
     return
   }
-  
+
   try {
     const results = await fetchCommitsByUser(username as string)
     if (!results) {
@@ -34,9 +34,9 @@ export default async function handler(
       })
       return
     }
-    
-    // cache for 1 hour
-    res.setHeader('Cache-Control', 'public, max-age=3600')
+
+    // https://vercel.com/docs/concepts/functions/serverless-functions/edge-caching#stale-while-revalidate
+    res.setHeader('Cache-Control', 'Cache-Control: s-maxage=1, stale-while-revalidate')
     res.status(200).json({
       commits: results,
     })
@@ -46,3 +46,23 @@ export default async function handler(
     })
   }
 }
+
+async function within(fn: () => Promise<void>, res: NextApiResponse, duration: number) {
+  const id = setTimeout(() => res.status(500).json({
+    error: "It took too long to fetch the commits. Try a user with less activity. Sorry!"
+  }), duration)
+
+  try {
+    let data = await fn()
+    clearTimeout(id)
+    res.json(data)
+  } catch (e: any) {
+    res.status(500).json({ error: e.message })
+  }
+}
+
+const fct = async (req: NextApiRequest, res: NextApiResponse) => {
+  await within(() => handler(req, res), res, (60 * 1000) - 300)
+}
+
+export default fct

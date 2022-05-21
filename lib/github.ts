@@ -32,8 +32,9 @@ const _getCommitsByAuthorForRepos = async (repos: Repositories, user: string) =>
             repo: repo.name,
             author: user,
             per_page: 100,
-            timeout: 10000,
+            since: new Date(Date.now() - (1000 * 60 * 60 * 24 * 365 * 5)).toISOString()
         })
+
         const commitDates = commits.map((commit) => commit.commit.author?.date || commit.commit.committer?.date)
 
         const filtered = commitDates.filter((date) => date !== undefined) as string[]

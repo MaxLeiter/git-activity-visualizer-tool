@@ -13,7 +13,8 @@ type Props = {
 const HourScatterplot = ({ commits }: Props) => {
     const [hourBuckets, setHourBuckets] = useState<Map<number, number>>()
     const svgRef = useRef(null)
-    const tooltip = useTooltip()
+    const  {mouseLeave, mouseMove, mouseOver} = useTooltip({transformFct: 
+        (d) => `${d.hour}:00`})
     const { margin, rawWidth, rawHeight, width, height } = useGraphSize()
 
     useEffect(() => {
@@ -62,35 +63,14 @@ const HourScatterplot = ({ commits }: Props) => {
         svg
             .append("g")
             .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x).ticks(24)).selectAll("text").attr("transform", "translate(6 2) rotate(45)").style("text-anchor", "start")
+            .call(d3.axisBottom(x).ticks(25)).selectAll("text").attr("transform", "translate(6 2) rotate(45)").style("text-anchor", "start")
 
-        const maxCount = d3.max(mapToD3, d => d.count)
+        const maxCount = d3.max(mapToD3, d => d.count) || 0
         // Add Y axis
-        const y = d3.scaleLinear().domain([0, maxCount || 10]).range([height, 0])
+        const y = d3.scaleLinear().domain([0, maxCount]).range([height, 0])
         svg
             .append("g")
             .call(d3.axisLeft(y))
-
-        const mouseOver = function (event: MouseEvent, d: any) {
-            tooltip
-                .html(`${d.hour}:00 - ${d.count}`)
-                .style("left", event.pageX + "px")
-                .style("top", event.pageY + "px")
-                .style("opacity", 1)
-        }
-
-        const mouseMove = function (event: MouseEvent, d: any) {
-            tooltip
-                .style("left", event.pageX + "px")
-                .style("top", event.pageY + "px")
-        }
-
-        const mouseLeave = function () {
-            tooltip
-                .style("opacity", 0)
-                .transition()
-                .duration(200)
-        }
 
         // Add dots
         svg
@@ -149,8 +129,7 @@ const HourScatterplot = ({ commits }: Props) => {
             .style("text-decoration", "underline")
             .text(`Commits by hour`)
 
-    }, [commits.length, height, hourBuckets, margin.bottom, margin.left, margin.right, margin.top, rawHeight, rawWidth, tooltip, width])
-
+        }, [height, hourBuckets, margin.bottom, margin.left, margin.right, margin.top, mouseLeave, mouseMove, mouseOver, rawHeight, rawWidth, width])
     const download = useDownload(svgRef, 'commits-by-hour.svg')
 
     return (

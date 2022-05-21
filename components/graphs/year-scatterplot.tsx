@@ -13,8 +13,12 @@ type Props = {
 const YearScatterplot = ({ commits }: Props) => {
     const [yearBuckets, setYearBuckets] = useState<Map<number, number>>()
     const svgRef = useRef(null)
-    const tooltip = useTooltip()
+    const { mouseLeave, mouseMove, mouseOver } = useTooltip({
+        transformFct: (d) => d.year
+    })
     const { margin, rawWidth, rawHeight, width, height } = useGraphSize()
+
+    // const curve = d3.line().curve(d3.curveLinear)
 
     useEffect(() => {
         const bucket = new Map<number, number>()
@@ -74,27 +78,6 @@ const YearScatterplot = ({ commits }: Props) => {
             .append("g")
             .call(d3.axisLeft(y))
 
-        const mouseOver = function (event: MouseEvent, d: any) {
-            tooltip
-                .html(`${d.year} - ${d.count} commits`)
-                .style("left", event.pageX + "px")
-                .style("top", event.pageY + "px")
-                .style("opacity", 1)
-        }
-
-        const mouseMove = function (event: MouseEvent, d: any) {
-            tooltip
-                .style("left", event.pageX + "px")
-                .style("top", event.pageY + "px")
-        }
-
-        const mouseLeave = function () {
-            tooltip
-                .style("opacity", 0)
-                .transition()
-                .duration(200)
-        }
-
         // Add dots
         svg
             .append("g")
@@ -153,7 +136,14 @@ const YearScatterplot = ({ commits }: Props) => {
             .style("text-decoration", "underline")
             .text(`Commits by year`)
 
-    }, [commits.length, height, margin.bottom, margin.left, margin.right, margin.top, yearBuckets, rawHeight, rawWidth, tooltip, width])
+        // svg
+        //     .append('path')
+        //     .attr('d', curve(mapToD3.map(d => [x(keyMap.indexOf(d.year) + 1), y(d.count)])))
+        //     .attr('stroke', 'var(--lighter-gray)')
+        //     .attr('fill', 'none')
+        //     .attr('stroke-width', '1px')
+
+    }, [commits.length, height, margin.bottom, margin.left, margin.right, margin.top, yearBuckets, rawHeight, rawWidth, width, mouseOver, mouseMove, mouseLeave])
 
     const download = useDownload(svgRef, 'commits-by-year.svg')
 

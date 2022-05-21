@@ -2,7 +2,7 @@
   color: var(--light-gray);
 }
 
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 768px) {
   .container {
     padding: var(--gap);
   }

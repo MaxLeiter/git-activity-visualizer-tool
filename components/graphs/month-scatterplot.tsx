@@ -13,7 +13,9 @@ type Props = {
 const MonthScatterplot = ({ commits }: Props) => {
     const [monthBuckets, setMonthBuckets] = useState<Map<number, number>>()
     const svgRef = useRef(null)
-    const tooltip = useTooltip()
+    const { mouseLeave, mouseMove, mouseOver } = useTooltip({
+        transformFct: (d) => getMonthFromNumber(d.month)
+    })
     const { margin, rawWidth, rawHeight, width, height } = useGraphSize()
 
     useEffect(() => {
@@ -72,35 +74,13 @@ const MonthScatterplot = ({ commits }: Props) => {
             .append("g")
             .call(d3.axisLeft(y))
 
-        const mouseOver = function (event: MouseEvent, d: any) {
-            tooltip
-                .html(`${getMonthFromNumber(d.month)} - ${d.count} commits`)
-                .style("left", event.pageX + "px")
-                .style("top", event.pageY + "px")
-                .style("opacity", 1)
-        }
-
-        const mouseMove = function (event: MouseEvent, d: any) {
-            tooltip
-                .style("left", event.pageX + "px")
-                .style("top", event.pageY + "px")
-        }
-
-        const mouseLeave = function () {
-            tooltip
-                .style("opacity", 0)
-                .transition()
-                .duration(200)
-        }
-
-        // Add dots
         svg
             .append("g")
             .selectAll("dot")
             .data(mapToD3)
             .enter()
             .append("circle")
-            .attr("cx", function (d) { return x(d.month + 1 ) })
+            .attr("cx", function (d) { return x(d.month + 1) })
             .attr("cy", function (d) { return y(d.count) })
             .attr("r", 5)
 
@@ -151,7 +131,7 @@ const MonthScatterplot = ({ commits }: Props) => {
             .style("color", "var(--fg)")
             .text(`Commits by month of the year`)
 
-    }, [commits.length, height, margin.bottom, margin.left, margin.right, margin.top, monthBuckets, rawHeight, rawWidth, tooltip, width])
+    }, [commits.length, height, margin.bottom, margin.left, margin.right, margin.top, monthBuckets, mouseLeave, mouseMove, mouseOver, rawHeight, rawWidth, width])
 
     const download = useDownload(svgRef, 'commits-by-month.svg')
 
@@ -194,6 +174,8 @@ const getMonthFromNumber = (month: number) => {
             return "Nov"
         case 11:
             return "Dec"
+        default:
+            return ""
     }
 }
 
