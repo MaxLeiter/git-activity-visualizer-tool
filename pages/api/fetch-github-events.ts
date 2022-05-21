@@ -26,28 +26,18 @@ async function handler(
     return
   }
 
-  try {
-    const results = await fetchCommitsByUser(username as string)
-    if (!results) {
-      res.status(404).json({
-        error: 'No results found',
-      })
-      return
-    }
-
-    // https://vercel.com/docs/concepts/functions/serverless-functions/edge-caching#stale-while-revalidate
-    res.setHeader('Cache-Control', 'Cache-Control: s-maxage=1, stale-while-revalidate')
-    res.status(200).json({
-      commits: results,
+  const results = await fetchCommitsByUser(username as string)
+  if (!results) {
+    res.status(404).json({
+      error: 'No results found',
     })
-  } catch (error: any) {
-    res.status(500).json({
-      error: "Something went wrong: " + error.message ? error.message : error,
-    })
+    return
   }
+
+  return results
 }
 
-async function within(fn: () => Promise<void>, res: NextApiResponse, duration: number) {
+async function within(fn: () => Promise<Commits | undefined>, res: NextApiResponse, duration: number) {
   const id = setTimeout(() => res.status(500).json({
     error: "It took too long to fetch the commits. Try a user with less activity. Sorry!"
   }), duration)
@@ -55,7 +45,9 @@ async function within(fn: () => Promise<void>, res: NextApiResponse, duration: n
   try {
     let data = await fn()
     clearTimeout(id)
-    res.json(data)
+    // https://vercel.com/docs/concepts/functions/serverless-functions/edge-caching#stale-while-revalidate
+    res.setHeader('Cache-Control', 'Cache-Control: s-maxage=0 max-age=3600')
+    res.json({commits: data})
   } catch (e: any) {
     res.status(500).json({ error: e.message })
   }
