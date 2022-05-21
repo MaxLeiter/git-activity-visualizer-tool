@@ -1,0 +1,15 @@
+.themeSwitcher {
+    display: inline;
+}
+
+.themeSwitcher label {
+    margin-right: var(--gap-half);
+}
+
+@media screen and (max-width: 900px) {
+    .themeSwitcher {
+        align-self: flex-start;
+        display: flex;
+        flex-direction: row;
+    }
+}

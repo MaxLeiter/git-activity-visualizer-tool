@@ -1,3 +1,30 @@
+:root {
+  --content-width: min(800px, 100%);
+
+  --gap: 1rem;
+  --gap-double: 2rem;
+  --gap-triple: 3rem;
+  --gap-half: 0.5rem;
+  --gap-quarter: 0.25rem;
+
+  --radius: 4px;
+
+  --gray: rgb(51, 51, 51);
+  --light-gray: rgb(102, 102, 102);
+  --lighter-gray: rgb(153, 153, 153);
+
+  --bg: #efefef;
+  --fg: #333;
+}
+
+[data-theme="dark"] {
+  --gray: rgb(255, 255, 255);
+  --light-gray: rgb(204, 204, 204);
+  --lighter-gray: rgb(74, 74, 74);
+  --bg: #000;
+  --fg: #efefef;
+}
+
 html,
 body {
   padding: 0;
@@ -6,11 +33,37 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+body {
+  background: var(--bg);
+  color: var(--fg);
 }
 
 * {
   box-sizing: border-box;
+}
+
+main {
+  width: var(--content-width);
+  margin: 0 auto;
+}
+
+footer {
+  width: var(--content-width);
+  margin: 0 auto;
+  margin-top: var(--gap);
+  padding-top: var(--gap);
+  border-top: 1px solid #ddd;
+}
+
+select,
+button {
+    border-radius: var(--radius);
+    cursor: pointer;
+    border: 1px solid var(--lighter-gray);
+    padding: var(--gap-quarter);
+}
+
+label {
+  color: var(--light-gray);
+  margin-right: var(--gap);
 }

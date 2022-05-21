@@ -1,0 +1,28 @@
+.inputAndLabel {
+  display: flex;
+  align-items: center;
+}
+
+.inputAndLabel input {
+  flex: 1;
+  border: 1px solid var(--lighter-gray);
+  border-radius: var(--radius);
+  padding: var(--gap-quarter);
+}
+
+.inputAndLabel button {
+    border-radius: var(--radius);
+    padding: var(--gap-quarter);
+    cursor: pointer;
+    margin-left: var(--gap);
+    border: 1px solid var(--lighter-gray);
+}
+
+.inputError {
+  color: red;
+  font-size: 0.8rem;
+  border: 1px solid red;
+  width: 100%;
+  padding: var(--gap-quarter);
+  margin: var(--gap) 0;
+}
