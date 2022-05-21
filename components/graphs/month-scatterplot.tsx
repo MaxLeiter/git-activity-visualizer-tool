@@ -129,7 +129,7 @@ const MonthScatterplot = ({ commits }: Props) => {
             .style("font-size", "16px")
             .style("text-decoration", "underline")
             .style("color", "var(--fg)")
-            .text(`Commits by month of the year`)
+            .text(`Commits by month`)
 
     }, [commits.length, height, margin.bottom, margin.left, margin.right, margin.top, monthBuckets, mouseLeave, mouseMove, mouseOver, rawHeight, rawWidth, width])
 
@@ -138,7 +138,7 @@ const MonthScatterplot = ({ commits }: Props) => {
     return (
         <>
             <div className={styles.titleWrapper}>
-                <h2>Commits by month of the year</h2>
+                <h2>Commits by month</h2>
                 <button onClick={download}>Save as .svg</button>
             </div>
             <div className={styles.graphWrapper}>

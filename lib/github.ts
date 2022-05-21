@@ -16,7 +16,7 @@ const _getReposForUser = async (user: string) => {
     })
 
     // const withoutForks = data.filter((repo) => !repo.fork)
-    return data.slice(0, 35) as Repositories
+    return data.slice(0, 40) as Repositories
 }
 
 type CommitsByAuthor = string[]
