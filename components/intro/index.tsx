@@ -7,7 +7,7 @@ const Intro = () => (<>
         <ThemeSwitcher />
     </div>
     <p>
-        This is a <a href="https://d3js.org/" rel="noreferrer" target="_blank">d3.js</a> and React powered webapp that visualizes your Git commits. You can use it with the GitHub API to see when you most often push.
+        This is a <a href="https://d3js.org/" rel="noreferrer" target="_blank">d3.js</a> and React powered webapp that visualizes your Git commit activity. You can use it with the GitHub API to see when you most often push.
     </p>
     <p>
         It currently only supports GitHub but contributions adding support for GitLab and other source forges are welcome.
