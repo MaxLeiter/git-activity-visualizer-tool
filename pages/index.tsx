@@ -47,7 +47,6 @@ const Home: NextPage<Props> = ({ commits: initialCommits }: InferGetStaticPropsT
     setIsLoading(false)
   }
 
-  console.log(commits)
   return (
     <div className={styles.container}>
       <Head>
