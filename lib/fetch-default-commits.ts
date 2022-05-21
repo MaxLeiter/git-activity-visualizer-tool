@@ -1,7 +1,7 @@
 import { Commits } from "pages/api/fetch-github-events"
 
 // in case we break the deployed version, we can use this...
-const NEED_TO_FIX = true
+const NEED_TO_FIX = false
 
 const fetchDefaultCommits = async () => {
     let API_URL = process.env.NODE_ENV === "production" ? 
@@ -9,7 +9,7 @@ const fetchDefaultCommits = async () => {
         "http://localhost:3000/api/fetch-github-events?username=MaxLeiter"
 
     if (NEED_TO_FIX) {
-        API_URL = "https//hours-visualization-fv2ds610z-max-leiter.vercel.app/api/fetch-github-events?username=MaxLeiter"
+        API_URL = "https://hours-visualization-fv2ds610z-max-leiter.vercel.app/api/fetch-github-events?username=MaxLeiter"
     }
 
     const commitsByRepo = await fetch(API_URL)
